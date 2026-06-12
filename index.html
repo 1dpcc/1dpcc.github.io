@@ -180,14 +180,19 @@ footer{
 .footer-links a:hover{color:var(--accent)}
 .footer-copy{font-size:.68rem;color:rgba(200,185,240,.3)}
 
-/* CHANGELOG */
-.cl-btn{
-  margin-top:.7rem;
+/* CARD ACTIONS & CHANGELOG */
+.card-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: .7rem;
+}
+.action-btn {
   font-family:'Space Mono',monospace;font-size:.6rem;color:var(--muted);
   background:transparent;border:1px solid var(--border);border-radius:6px;
-  padding:.25rem .7rem;cursor:pointer;transition:all .15s;align-self:flex-start;
+  padding:.25rem .7rem;cursor:pointer;transition:all .15s;
+  text-decoration: none; display: inline-flex; align-items: center; justify-content: center;
 }
-.cl-btn:hover{color:var(--accent);border-color:rgba(180,126,255,.35);background:rgba(180,126,255,.05)}
+.action-btn:hover{color:var(--accent);border-color:rgba(180,126,255,.35);background:rgba(180,126,255,.05)}
 .cl-modal{
   display:none;position:fixed;inset:0;z-index:999;
   background:rgba(6,4,16,.8);backdrop-filter:blur(10px);
@@ -248,6 +253,7 @@ footer{
       "tag": "game",
       "tagDisplay": "TTK",
       "description": "TTK script featuring player ESP.",
+      "gameLink": "https://www.roblox.com/games/120189115846709/TTK-Testing",
       "code": "loadstring(game:HttpGet(\"https://raw.githubusercontent.com/1dpcc/1dpcc.github.io/refs/heads/main/Scripts/ttk.lua\"))()",
       "changelog": [
         {
@@ -379,7 +385,10 @@ function renderScripts(scripts){
           </div>
           <pre>${script.code}</pre>
         </div>
-        <button class="cl-btn" onclick="openCL(this)">changelog</button>
+        <div class="card-actions">
+          <button class="action-btn" onclick="openCL(this)">changelog</button>
+          ${script.gameLink ? `<a href="${script.gameLink}" target="_blank" class="action-btn">play game ↗</a>` : ''}
+        </div>
         <div class="cl-data" hidden>${script.changelog.map(entry=>`
           <div class="cl-entry"><div class="cl-entry-head"><span class="cl-ver">${entry.version}</span><span class="cl-date">${entry.date}</span></div><p>${entry.notes}</p></div>
         `).join('')}</div>
