@@ -313,38 +313,43 @@ footer{
 
 <script>
 // Load scripts from JSON
-async function loadScripts(){
-  // If opened via file://, use embedded JSON (for local double-click testing)
-  try{
-    if (location.protocol === 'file:'){
-      const embedded = document.getElementById('embedded-scripts');
-      if (embedded){
-        const data = JSON.parse(embedded.textContent || embedded.innerText || '{}');
-        const scripts = Array.isArray(data.scripts) ? data.scripts : (Array.isArray(data) ? data : []);
-        renderScripts(scripts);
-        console.log('Loaded scripts from embedded JSON');
-        return;
-      }else{
-        throw new Error('No embedded scripts.json present');
-      }
+function loadScripts() {
+  try {
+    const embedded = document.getElementById("embedded-scripts");
+
+    if (!embedded) {
+      throw new Error("Embedded scripts not found.");
     }
 
-    const fetchUrl = new URL('./scripts.json', location.href).href;
-    const res = await fetch(fetchUrl);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    const scripts = Array.isArray(data.scripts) ? data.scripts : (Array.isArray(data) ? data : []);
+    const data = JSON.parse(
+      embedded.textContent || embedded.innerText || "{}"
+    );
+
+    const scripts = Array.isArray(data.scripts)
+      ? data.scripts
+      : Array.isArray(data)
+      ? data
+      : [];
+
     renderScripts(scripts);
-    console.log('Loaded scripts from', fetchUrl);
-  }catch(e){
-      const fetchUrl = (typeof fetchUrl !== 'undefined') ? fetchUrl : '';
-      console.error('Failed to load scripts:', e, 'request:', fetchUrl);
-      const grid = document.getElementById('scripts-grid');
-      if (grid) {
-        grid.innerHTML = `<div class="card"><div class="card-body"><div class="card-name">No scripts loaded</div><div class="card-desc">Unable to fetch <strong>scripts.json</strong>${fetchUrl?` from <code>${fetchUrl}</code>`:''}.<br/>Error: ${String(e.message || e)}</div></div></div>`;
-      }
-      const countEl = document.getElementById('scripts-count');
-      if (countEl) countEl.textContent = '0 total';
+    console.log("Loaded embedded scripts.");
+  } catch (e) {
+    console.error("Failed to load embedded scripts:", e);
+
+    const grid = document.getElementById("scripts-grid");
+    grid.innerHTML = `
+      <div class="card">
+        <div class="card-body">
+          <div class="card-name">Error</div>
+          <div class="card-desc">
+            Failed to load embedded scripts.<br>
+            ${e.message}
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.getElementById("scripts-count").textContent = "0 total";
   }
 }
 
